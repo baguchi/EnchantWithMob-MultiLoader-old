@@ -7,6 +7,8 @@ base {
     archivesName = "${mod_name}-${minecraft_version}-fabric"
 }
 
+version = mod_version
+
 dependencies {
     // Base
     minecraft("com.mojang:minecraft:${minecraft_version}")

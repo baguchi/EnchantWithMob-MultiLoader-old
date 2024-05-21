@@ -22,9 +22,6 @@ public interface IRegistrar {
     /**
      * Attempts to register an object to the specified {@linkplain Registry targetRegistry}.
      *
-     * <br> </br>
-     * <br> </br>
-     *
      * Generally, any registries available in the {@link Registries} class can be used for this method. This could include custom registry types (depending on the loader you're working with).
      *
      * @param objId The objId of the object to register, following Minecraft's regex naming conventions/constraints (<code>[a-z0-9_.-]</code>). Duplicate exceptions and other edge-cases are handled accordingly

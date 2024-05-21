@@ -1,6 +1,5 @@
 package baguchan.enchantwithmob.network.packet;
 
-import baguchan.enchantwithmob.EnchantWithMob;
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.capability.MobEnchantCapability;
 import baguchan.enchantwithmob.network.Packet;
@@ -16,6 +15,10 @@ public class AncientMessage implements Packet {
 
     private int entityId;
     private boolean isAncient;
+
+    public AncientMessage() {
+
+    }
 
     public AncientMessage(Entity entity, boolean ancient) {
         this.entityId = entity.getId();
