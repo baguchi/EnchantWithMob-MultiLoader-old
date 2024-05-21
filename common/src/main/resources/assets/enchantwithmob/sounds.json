@@ -1,0 +1,125 @@
+{
+  "entity.enchanter.idle": {
+    "category": "entity",
+    "subtitle": "subtitles.entity.enchanter.idle",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/idle_1",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/idle_2",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/idle_3",
+        "stream": true
+      }
+    ]
+  },
+  "entity.enchanter.hurt": {
+    "category": "entity",
+    "subtitle": "subtitles.entity.enchanter.hurt",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/hurt_1",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/hurt_2",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/hurt_3",
+        "stream": true
+      }
+    ]
+  },
+  "entity.enchanter.death": {
+    "category": "entity",
+    "subtitle": "subtitles.entity.enchanter.death",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/death_1",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/death_2",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/death_3",
+        "stream": true
+      }
+    ]
+  },
+  "entity.enchanter.pre_attack": {
+    "category": "entity",
+    "subtitle": "subtitles.entity.enchanter.pre_attack",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/pre_attack_1",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/pre_attack_2",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/pre_attack_3",
+        "stream": true
+      }
+    ]
+  },
+  "entity.enchanter.attack": {
+    "category": "entity",
+    "subtitle": "subtitles.entity.enchanter.attack",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/attack_1",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/attack_2",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/attack_3",
+        "stream": true
+      }
+    ]
+  },
+  "entity.enchanter.spell": {
+    "category": "entity",
+    "subtitle": "subtitles.entity.enchanter.spell",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/spell_1",
+        "stream": true
+      },
+      {
+        "name": "enchantwithmob:entities/enchanter/spell2",
+        "stream": true
+      }
+    ]
+  },
+  "entity.enchanter.beam": {
+    "category": "entity",
+    "subtitle": "subtitles.entity.enchanter.beam",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/beam",
+        "stream": true
+      }
+    ]
+  },
+  "entity.enchanter.beam_loop": {
+    "category": "entity",
+    "sounds": [
+      {
+        "name": "enchantwithmob:entities/enchanter/beam_loop",
+        "stream": true
+      }
+    ]
+  }
+}

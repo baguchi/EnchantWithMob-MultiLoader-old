@@ -1,0 +1,53 @@
+{
+    "schemaVersion": 1,
+    "id": "infamous_artifacts",
+    "version": "${mod_version}",
+    "name": "${mod_name}",
+    "description": "${mod_description}",
+    "authors": [
+        "${mod_authors}"
+    ],
+    "contact": {
+        "homepage": "${homepage_url}",
+        "sources": "${source_code_url}"
+    },
+    "license": "${mod_license}",
+    "icon": "${mod_icon_path}",
+    "environment": "*",
+    "accessWidener": "${mod_id}.accesswidener",
+    "entrypoints": {
+        "main": [
+            "${fabric_common_entrypoint}"
+        ],
+        "client": [
+            "${fabric_client_entrypoint}"
+        ],
+        "data": [
+            "${fabric_datagen_entrypoint}"
+        ]
+    },
+    "mixins": [
+        "${mod_id}.mixins.json",
+        "${mod_id}.fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": "${fabric_loader_version_range}",
+        "fabric": "${fabric_api_version_range}",
+        "minecraft": "${fabric_minecraft_version_range}",
+        "puzzleslib": "${fabric_forge_config_api_version_range}",
+        "extensibleenums": "*",
+        "java": ">=17"
+    },
+    "suggests": {
+    },
+    "custom": {
+        "modmenu": {
+            "links": {
+                "infamous_artifacts.discord": "https://discord.gg/Dy4JAHZDZK"
+            },
+            "badges": [ "library" ],
+            "update_checker": true
+        }
+    }
+}
+  
