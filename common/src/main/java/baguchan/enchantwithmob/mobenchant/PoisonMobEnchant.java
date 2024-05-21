@@ -25,6 +25,6 @@ public class PoisonMobEnchant extends MobEnchant {
 
 	@Override
 	protected boolean canApplyTogether(MobEnchant ench) {
-		return ench != EWMobEnchants.POISON_CLOUD.get() && super.canApplyTogether(ench);
+		return ench != EWMobEnchants.POISON_CLOUD && super.canApplyTogether(ench);
 	}
 }

@@ -3,7 +3,6 @@ package baguchan.enchantwithmob.platform.services;
 import baguchan.enchantwithmob.EnchantWithMob;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
@@ -39,5 +38,5 @@ public interface IRegistrar {
      */
     <T> Supplier<T> registerObject(final ResourceLocation objId, final Supplier<T> objSup, Registry<T> targetRegistry);
 
-    <T> Registry<T> registerNewRegistry(ResourceKey<Registry<T>> registryKey, ResourceLocation defaultId);
+    <P> Registry<P> createRegistry(Class<P> type, ResourceLocation registryName);
 }

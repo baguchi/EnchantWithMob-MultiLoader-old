@@ -2,6 +2,7 @@ package baguchan.enchantwithmob.mixins.client;
 
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.api.IEnchantedTime;
+import baguchan.enchantwithmob.client.ClientEventHandler;
 import baguchan.enchantwithmob.client.render.layer.EnchantLayer;
 import baguchan.enchantwithmob.registry.EWMobEnchants;
 import baguchan.enchantwithmob.utils.MobEnchantUtils;
@@ -38,12 +39,31 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
         if (this.getModel() instanceof IEnchantedTime enchantedTime) {
             if (instance instanceof IEnchantCap enchantCap) {
                 //ajust time
-                int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.HASTE.get()), 0, 2);
-                int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.SLOW.get()), 0, 2);
+                int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.HASTE), 0, 2);
+                int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.SLOW), 0, 2);
                 float different = 1 + fastTime * 0.125F - slowTime * 0.125F;
 
                 enchantedTime.setDifferentTime(different);
             }
         }
+    }
+
+    @Inject(method = "render", at = @At(value = "HEAD"))
+    public void render(T instance, float p_115309_, float p_115310_, PoseStack p_115311_, MultiBufferSource p_115312_, int p_115313_, CallbackInfo callbackInfo) {
+
+        PoseStack matrixStack = p_115311_;
+        MultiBufferSource bufferBuilder = p_115312_;
+        float particalTick = p_115310_;
+        if (instance instanceof IEnchantCap cap) {
+            if (cap.getEnchantCap().getEnchantOwner() != null) {
+
+                LivingEntity entity = cap.getEnchantCap().getEnchantOwner();
+                if (entity != null) {
+                    ClientEventHandler.renderBeam(cap.getEnchantCap(), instance, particalTick, matrixStack, bufferBuilder, entity);
+                }
+            }
+        }
+
+
     }
 }

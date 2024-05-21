@@ -80,8 +80,8 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
 
     @Inject(method = "getVoicePitch", at = @At("RETURN"), cancellable = true)
     public void getVoicePitch(CallbackInfoReturnable<Float> cir) {
-        int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(this.getEnchantCap().getMobEnchants(), EWMobEnchants.HASTE.get()), 0, 2);
-        int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(this.getEnchantCap().getMobEnchants(), EWMobEnchants.SLOW.get()), 0, 2);
+        int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(this.getEnchantCap().getMobEnchants(), EWMobEnchants.HASTE), 0, 2);
+        int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(this.getEnchantCap().getMobEnchants(), EWMobEnchants.SLOW), 0, 2);
         float different = Mth.clamp(cir.getReturnValue() + fastTime * 0.125F - slowTime * 0.125F, 0.1F, 2.0F);
 
         cir.setReturnValue(different);

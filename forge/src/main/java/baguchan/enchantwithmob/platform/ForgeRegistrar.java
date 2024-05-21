@@ -2,17 +2,17 @@ package baguchan.enchantwithmob.platform;
 
 import baguchan.enchantwithmob.platform.services.IRegistrar;
 import baguchan.enchantwithmob.registry.*;
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.NewRegistryEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -50,14 +50,11 @@ public class ForgeRegistrar implements IRegistrar {
 
 
     @Override
-    public <T> Registry<T> registerNewRegistry(ResourceKey<Registry<T>> registryKey, ResourceLocation defaultId) {
-        FMLJavaModLoadingContext.get().getModEventBus().<NewRegistryEvent>addListener(event -> event.create(new RegistryBuilder<T>().setName(registryKey.location())));
-        final  var register = DeferredRegister.create(registryKey, MOD_ID);
-        Supplier<Registry<T>> registryInstance = Suppliers.memoize(() -> (Registry<T>) get(BuiltInRegistries.REGISTRY, register.getRegistryKey()));
-
-        final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        register.register(bus);
-        return registryInstance.get();
+    public <P> Registry<P> createRegistry(Class<P> type, ResourceLocation registryName) {
+        ResourceKey<Registry<P>> registryKey = ResourceKey.createRegistryKey(registryName);
+        DeferredRegister<P> deferredRegister = DeferredRegister.create(registryKey, MOD_ID);
+        Supplier<IForgeRegistry<P>> iForgeRegistrySupplier = deferredRegister.makeRegistry(RegistryBuilder::new);
+        return new MappedRegistry<>(registryKey, Lifecycle.stable());
     }
 
     @SuppressWarnings("unchecked")

@@ -24,7 +24,7 @@ public class MobEnchantCombatRules {
     }
 
     public static float getThornDamage(float damage, MobEnchantCapability cap) {
-        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getMobEnchants(), EWMobEnchants.THORN.get());
+        int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getMobEnchants(), EWMobEnchants.THORN);
         if (i > 0) {
             damage = Mth.floor(damage * (float) i * 0.15F) - 1.0F;
         }

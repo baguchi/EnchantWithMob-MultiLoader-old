@@ -25,6 +25,6 @@ public class ThornEnchant extends MobEnchant {
 
 	@Override
 	protected boolean canApplyTogether(MobEnchant ench) {
-		return super.canApplyTogether(ench) && ench != EWMobEnchants.DEFLECT.get();
+		return super.canApplyTogether(ench) && ench != EWMobEnchants.DEFLECT;
 	}
 }

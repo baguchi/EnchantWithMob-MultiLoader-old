@@ -33,8 +33,8 @@ public abstract class ServerLevelMixin extends Level {
     public void tickNonPassenger(Entity instance, CallbackInfo ci) {
         if (instance instanceof IEnchantCap enchantCap && instance instanceof IEnchantedTime enchantedTime) {
             //ajust time
-            int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.HASTE.get()), 0, 2);
-            int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.SLOW.get()), 0, 2);
+            int fastTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.HASTE), 0, 2);
+            int slowTime = Mth.clamp(MobEnchantUtils.getMobEnchantLevelFromHandler(enchantCap.getEnchantCap().getMobEnchants(), EWMobEnchants.SLOW), 0, 2);
 
             float different = 1 + fastTime * 0.125F - slowTime * 0.125F;
 

@@ -34,7 +34,8 @@
         "fabricloader": "${fabric_loader_version_range}",
         "fabric": "${fabric_api_version_range}",
         "minecraft": "${fabric_minecraft_version_range}",
-        "forgeconfigapiport": "${fabric_forge_config_api_version_range}",
+        "porting_lib_config": "${porting_lib_version_range}",
+        "porting_lib_entity": "${porting_lib_version_range}",
         "extensibleenums": "*",
         "java": ">=17"
     },

@@ -3,8 +3,8 @@ package baguchan.enchantwithmob.platform;
 import baguchan.enchantwithmob.platform.services.IRegistrar;
 import baguchan.enchantwithmob.registry.*;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
@@ -28,7 +28,9 @@ public class FabricRegistrar implements IRegistrar {
     }
 
     @Override
-    public <T> Registry<T> registerNewRegistry(ResourceKey<Registry<T>> registryKey, ResourceLocation defaultId) {
-        return FabricRegistryBuilder.createDefaulted(registryKey, defaultId).buildAndRegister();
+    public <P> Registry<P> createRegistry(Class<P> type, ResourceLocation registryName) {
+        return FabricRegistryBuilder.createSimple(type, registryName)
+                .attribute(RegistryAttribute.SYNCED)
+                .buildAndRegister();
     }
 }

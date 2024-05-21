@@ -10,7 +10,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -203,7 +206,7 @@ public class Enchanter extends SpellcasterIllager {
         boolean flag = this.random.nextFloat() <= raid.getEnchantOdds() + 0.1F;
         if (flag) {
             if (this instanceof IEnchantCap cap) {
-                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(EWMobEnchants.PROTECTION.get(), 2));
+                MobEnchantUtils.addEnchantmentToEntity(this, cap, new MobEnchantmentData(EWMobEnchants.PROTECTION, 2));
             }
         }
     }
@@ -263,7 +266,7 @@ public class Enchanter extends SpellcasterIllager {
                     //set enchant limit
                     if (enchanted_list.size() < 5) {
                         LivingEntity target = list.get(Enchanter.this.random.nextInt(list.size()));
-                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || target.getMobType() == MobType.ILLAGER && target.getTeam() == null)) {
+                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || Enchanter.this.getTeam() == null && target.getTeam() == null)) {
                             Enchanter.this.setEnchantTarget(target);
                             Enchanter.this.level().broadcastEntityEvent(Enchanter.this, (byte) 61);
                             return true;

@@ -26,6 +26,6 @@ public class SmallMobEnchant extends MobEnchant {
 
     @Override
     protected boolean canApplyTogether(MobEnchant ench) {
-        return super.canApplyTogether(ench) && ench != EWMobEnchants.HUGE.get();
+        return super.canApplyTogether(ench) && ench != EWMobEnchants.HUGE;
     }
 }

@@ -147,16 +147,15 @@ public class MobEnchantCapability {
 	public void onNewEnchantEffect(LivingEntity entity, MobEnchant enchant, int enchantLevel) {
 		enchant.applyAttributesModifiersToEntity(entity, entity.getAttributes(), enchantLevel);
 
-		//if (EnchantConfig.COMMON.dungeonsLikeHealth.get()) {
-		if(false) {
+		if (Services.CONFIG_HANDLER.getDungeonsLikeHealth()) {
 			AttributeInstance modifiableattributeinstance = entity.getAttributes().getInstance(Attributes.MAX_HEALTH);
 			if (modifiableattributeinstance != null && !modifiableattributeinstance.hasModifier(HEALTH_MODIFIER)) {
 				modifiableattributeinstance.removeModifier(HEALTH_MODIFIER_UUID);
 				modifiableattributeinstance.addPermanentModifier(HEALTH_MODIFIER);
 				entity.setHealth(entity.getHealth() * 1.25F);
 			}
-			//}
 		}
+
 	}
 
 	/*

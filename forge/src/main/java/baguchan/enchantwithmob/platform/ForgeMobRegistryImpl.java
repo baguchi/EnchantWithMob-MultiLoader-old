@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.function.Supplier;
@@ -23,7 +24,7 @@ public class ForgeMobRegistryImpl implements MobRegistry {
         return new ForgeSpawnEggItem(entity, backgroundColor, highlightColor, properties);
     }
 
-    public <T extends Mob> void registrySpawnPlacement(EntityType<T> entityType, SpawnPlacements.Type placementType, Heightmap.Types heightTypes, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
-        SpawnPlacements.register(entityType, placementType, heightTypes, spawnPredicate);
+    public <T extends Mob> void registrySpawnPlacement(Supplier<EntityType<T>> entityType, SpawnPlacements.Type placementType, Heightmap.Types heightTypes, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
+        FMLJavaModLoadingContext.get().getModEventBus().<SpawnPlacementRegisterEvent>addListener(event -> event.register(entityType.get(), placementType, heightTypes, spawnPredicate, SpawnPlacementRegisterEvent.Operation.REPLACE));
     }
 }

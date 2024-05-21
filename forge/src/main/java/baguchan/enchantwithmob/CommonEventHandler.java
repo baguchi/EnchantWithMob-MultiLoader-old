@@ -26,12 +26,17 @@ import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -40,12 +45,30 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = EWConstants.MOD_ID)
 public class CommonEventHandler {
 
+    @SubscribeEvent
+    public static void onHit(ProjectileImpactEvent event) {
+        Projectile projectile = event.getProjectile();
+
+        if (event.getRayTraceResult() instanceof EntityHitResult) {
+            EntityHitResult entityHitResult = (EntityHitResult) event.getRayTraceResult();
+            MobEnchantUtils.executeIfPresent(entityHitResult.getEntity(), EWMobEnchants.DEFLECT, () -> {
+                event.setCanceled(true);
+                Vec3 vec3 = projectile.getDeltaMovement();
+
+                projectile.setDeltaMovement(-vec3.x * 0.75F, -vec3.y * 0.75F, -vec3.z * 0.75F);
+                if (projectile instanceof AbstractArrow arrow) {
+                    arrow.setPierceLevel((byte) 0);
+                }
+            });
+        }
+    }
     /*
      * this event handle the Ender dragon mob enchant
      */
@@ -168,11 +191,11 @@ public class CommonEventHandler {
 
 
                 //if (EnchantConfig.COMMON.naturalSpawnEnchantedMob.get() && isSpawnEnchantableEntity(event.getEntity())) {
-                if (isSpawnEnchantableEntity(event.getEntity())) {
+                if (EnchantConfig.COMMON.naturalSpawnEnchantedMob.get() && isSpawnEnchantableEntity(event.getEntity())) {
 
-                    if (!(livingEntity instanceof Animal) && !(livingEntity instanceof WaterAnimal)) {
+                    if (!(livingEntity instanceof Animal) && !(livingEntity instanceof WaterAnimal) || EnchantConfig.COMMON.spawnEnchantedAnimal.get()) {
                         if (event.getSpawnType() != MobSpawnType.BREEDING && event.getSpawnType() != MobSpawnType.CONVERSION && event.getSpawnType() != MobSpawnType.STRUCTURE && event.getSpawnType() != MobSpawnType.MOB_SUMMONED) {
-                            if (world.getRandom().nextFloat() < (0.005D * world.getDifficulty().getId()) + world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() * 0.025D) {
+                            if (world.getRandom().nextFloat() < (EnchantConfig.COMMON.difficultyBasePercent.get() * world.getDifficulty().getId()) + world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() * EnchantConfig.COMMON.effectiveBasePercent.get()) {
                                 if (!world.isClientSide()) {
                                     int i = 0;
                                     float difficultScale = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
@@ -205,15 +228,15 @@ public class CommonEventHandler {
     }
 
     private static boolean isSpawnAlwayEnchantableEntity(Entity entity) {
-        return false;
+        return !(entity instanceof Player) && !(entity instanceof ArmorStand) && !(entity instanceof Boat) && !(entity instanceof Minecart) && EnchantConfig.COMMON.alwayEnchantableMobs.get().contains(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString());
     }
 
     private static boolean isSpawnAlwayEnchantableAncientEntity(Entity entity) {
-        return false;
+        return !(entity instanceof Player) && !(entity instanceof ArmorStand) && !(entity instanceof Boat) && !(entity instanceof Minecart) && EnchantConfig.COMMON.alwayEnchantableAncientMobs.get().contains(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString());
     }
 
     private static boolean isSpawnEnchantableEntity(Entity entity) {
-        return !(entity instanceof Player) && !(entity instanceof ArmorStand) && !(entity instanceof Boat) && !(entity instanceof Minecart);
+        return !(entity instanceof Player) && !(entity instanceof ArmorStand) && !(entity instanceof Boat) && !(entity instanceof Minecart) && !EnchantConfig.COMMON.enchantOnSpawnExclusionMobs.get().contains(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString());
     }
 
     @SubscribeEvent
@@ -238,7 +261,7 @@ public class CommonEventHandler {
 
             if (attacker instanceof IEnchantCap cap) {
                 if (cap.getEnchantCap().hasEnchant()) {
-                    int mobEnchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.STRONG.get());
+                    int mobEnchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.STRONG);
                     int mobEnchantSize = cap.getEnchantCap().getMobEnchants().size();
 
                     //make snowman stronger
@@ -249,8 +272,8 @@ public class CommonEventHandler {
                     }
                 }
 
-                if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON.get())) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON.get());
+                if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON)) {
+                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON);
 
                     if (event.getAmount() > 0) {
                         if (attacker.getRandom().nextFloat() < i * 0.125F) {
@@ -264,9 +287,15 @@ public class CommonEventHandler {
         }
 
         if (livingEntity instanceof IEnchantCap cap) {
+            if (!event.getSource().is(DamageTypeTags.BYPASSES_EFFECTS) && cap.getEnchantCap().hasEnchant()) {
+                int mobEnchantLevel = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.PROTECTION);
+                int mobEnchantSize = cap.getEnchantCap().getMobEnchants().size();
+
+                event.setAmount(MobEnchantCombatRules.getDamageReduction(event.getAmount(), mobEnchantLevel, mobEnchantSize));
+            }
             if (event.getSource().getDirectEntity() != null) {
                 if (cap.getEnchantCap().hasEnchant()) {
-                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.THORN.get());
+                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.THORN);
 
                     if (event.getSource().getDirectEntity() instanceof LivingEntity && !event.getSource().is(DamageTypeTags.IS_PROJECTILE) && !event.getSource().is(DamageTypes.THORNS) && livingEntity.getRandom().nextFloat() < i * 0.1F) {
                         LivingEntity attacker = (LivingEntity) event.getSource().getDirectEntity();

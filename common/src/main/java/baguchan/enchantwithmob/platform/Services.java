@@ -11,6 +11,7 @@ public class Services {
     public static final MobRegistry MOB_REGISTRY = load(MobRegistry.class);
     public static final RenderRegistry RENDER_REGISTRY = load(RenderRegistry.class);
     public static final INetworkHandler NETWORK_HANDLER = load(INetworkHandler.class);
+    public static final ConfigHandler CONFIG_HANDLER = load(ConfigHandler.class);
 
     public static <T> T load(Class<T> clazz) {
         final T loadedService = ServiceLoader.load(clazz)

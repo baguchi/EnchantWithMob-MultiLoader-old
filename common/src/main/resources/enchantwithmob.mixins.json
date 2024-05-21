@@ -12,13 +12,12 @@
   ],
   "client": [
     "client.ArrowRendererMixin",
+    "client.ClientPacketListenerMixin",
     "client.EnderDragonRendererMixin",
     "client.EntityRendererMixin",
-    "client.EvokerFangsRendererMixin",
     "client.HierarchicalModelMixin",
     "client.LivingEntityRendererMixin",
-    "client.WitherSkullRendererMixin",
-    "client.ClientPacketListenerMixin"
+    "client.WitherSkullRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

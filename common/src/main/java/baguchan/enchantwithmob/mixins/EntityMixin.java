@@ -2,6 +2,7 @@ package baguchan.enchantwithmob.mixins;
 
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.api.IEnchantedTime;
+import baguchan.enchantwithmob.platform.Services;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,12 +35,12 @@ public class EntityMixin implements IEnchantedTime {
     public void refreshDimensions(CallbackInfo callbackInfo) {
         if (this instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
-                //if (EnchantConfig.COMMON.changeSizeWhenEnchant.get()) {
+                if (Services.CONFIG_HANDLER.getChangeSizeWhenEnchant()) {
                     float totalWidth = this.dimensions.width * 1.025F;
                     float totalHeight = this.dimensions.height * 1.025F;
                     this.eyeHeight = (this.eyeHeight * (1.025F));
                     dimensions = EntityDimensions.fixed(totalWidth, totalHeight);
-                //}
+                }
             }
         }
     }

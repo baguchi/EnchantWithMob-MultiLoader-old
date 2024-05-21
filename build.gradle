@@ -83,6 +83,7 @@ subprojects {
             name = "Fuzs Mod Resources"
             url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
         }
+        maven { url = "https://mvn.devos.one/releases/" }
     }
 
     tasks.withType(JavaCompile).configureEach {
@@ -176,12 +177,12 @@ subprojects {
                 "fabric_jei_version"                    : fabric_jei_version,
                 "fabric_appleskin_version"              : fabric_appleskin_version,
                 "fabric_modmenu_version"                : fabric_modmenu_version,
-                "fabric_forge_config_api_version"          : fabric_forge_config_api_version,
+                "porting_lib_version"      : porting_lib_version,
 
                 "fabric_jei_version_range"              : fabric_jei_version_range,
                 "fabric_appleskin_version_range"        : fabric_appleskin_version_range,
                 "fabric_modmenu_version_range"          : fabric_modmenu_version_range,
-                "fabric_forge_config_api_version_range": fabric_forge_config_api_version_range
+                "porting_lib_version_range": porting_lib_version_range
         ]
 
         filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {

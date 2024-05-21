@@ -6,7 +6,9 @@ import net.minecraft.world.entity.raid.Raid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -19,6 +21,8 @@ public class EnchantWithMobForge {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.<FMLCommonSetupEvent>addListener(this::commonEvent);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> EnchantWithMobClient.client());
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EnchantConfig.COMMON_SPEC);
+
     }
 
     public void commonEvent(FMLCommonSetupEvent event) {

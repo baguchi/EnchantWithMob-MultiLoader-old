@@ -3,8 +3,8 @@ package baguchan.enchantwithmob.utils;
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.capability.MobEnchantHandler;
 import baguchan.enchantwithmob.mobenchant.MobEnchant;
+import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWItems;
-import baguchan.enchantwithmob.registry.EWMobEnchants;
 import baguchan.enchantwithmob.registry.EWModRegistry;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -370,11 +370,11 @@ public class MobEnchantUtils {
 	}
 
 	public static boolean checkAllowMobEnchantFromMob(@Nullable MobEnchant mobEnchant, LivingEntity livingEntity, IEnchantCap capability) {
-		//if (!EnchantConfig.COMMON.universalEnchant.get()) {
+		if (!Services.CONFIG_HANDLER.getUniversalEnchant()) {
 			if (mobEnchant != null && !mobEnchant.isCompatibleMob(livingEntity)) {
 				return false;
 			}
-		//}
+		}
 
 		if (mobEnchant.isDisabled()) {
 			return false;

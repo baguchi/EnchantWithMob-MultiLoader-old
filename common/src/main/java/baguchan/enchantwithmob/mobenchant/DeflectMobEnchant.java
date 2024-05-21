@@ -1,10 +1,6 @@
 package baguchan.enchantwithmob.mobenchant;
 
 import baguchan.enchantwithmob.registry.EWMobEnchants;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
 
 
 public class DeflectMobEnchant extends MobEnchant {
@@ -22,7 +18,7 @@ public class DeflectMobEnchant extends MobEnchant {
 
     @Override
     protected boolean canApplyTogether(MobEnchant ench) {
-        return super.canApplyTogether(ench) && ench != EWMobEnchants.THORN.get();
+        return super.canApplyTogether(ench) && ench != EWMobEnchants.THORN;
     }
 
     @Override

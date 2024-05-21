@@ -1,9 +1,7 @@
 package baguchan.enchantwithmob.mobenchant;
 
 
-import baguchan.enchantwithmob.capability.MobEnchantCapability;
-import baguchan.enchantwithmob.registry.EWMobEnchants;
-import baguchan.enchantwithmob.utils.MobEnchantUtils;
+import baguchan.enchantwithmob.platform.Services;
 import net.minecraft.world.entity.LivingEntity;
 
 public class HugeMobEnchant extends MobEnchant {
@@ -20,13 +18,11 @@ public class HugeMobEnchant extends MobEnchant {
     }
 
 
-    public static float getDamageIncrease(float damage, MobEnchantCapability cap) {
-        int level = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getMobEnchants(), EWMobEnchants.HUGE.get());
-        if (level > 0) {
-            damage *= 1.0F + level * 0.15F;
-        }
-        return damage;
+    @Override
+    public boolean isCompatibleMob(LivingEntity livingEntity) {
+        return super.isCompatibleMob(livingEntity) || Services.CONFIG_HANDLER.getBigYourSelf();
     }
+
 
     @Override
     public boolean isTresureEnchant() {

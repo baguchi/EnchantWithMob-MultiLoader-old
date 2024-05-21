@@ -24,7 +24,7 @@ public class FabricMobRegistryImpl implements MobRegistry {
         return entry;
     }
 
-    public <T extends Mob> void registrySpawnPlacement(EntityType<T> entityType, SpawnPlacements.Type placementType, Heightmap.Types heightTypes, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
-        SpawnPlacements.register(entityType, placementType, heightTypes, spawnPredicate);
+    public <T extends Mob> void registrySpawnPlacement(Supplier<EntityType<T>> entityType, SpawnPlacements.Type placementType, Heightmap.Types heightTypes, SpawnPlacements.SpawnPredicate<T> spawnPredicate) {
+        SpawnPlacements.register(entityType.get(), placementType, heightTypes, spawnPredicate);
     }
 }

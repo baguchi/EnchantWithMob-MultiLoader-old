@@ -21,7 +21,7 @@ public class EWEntityTypes {
 
     public static void register() {
         Services.MOB_REGISTRY.attributes(ENCHANTER, Enchanter::createAttributeMap);
-        Services.MOB_REGISTRY.registrySpawnPlacement(ENCHANTER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules);
+        Services.MOB_REGISTRY.registrySpawnPlacement(ENCHANTER, SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules);
     }
 
    private static <T extends Entity, E extends EntityType<? extends T>> Supplier<E> create(String key, Supplier<E> builder) {

@@ -20,7 +20,7 @@ public interface MobRegistry {
 
     Item spawnEgg(Supplier<? extends EntityType<? extends Mob>> entity, int backgroundColor, int highlightColor, Item.Properties properties);
 
-    <T extends Mob> void registrySpawnPlacement(EntityType<T> entityType, SpawnPlacements.Type placementType, Heightmap.Types heightTypes, SpawnPlacements.SpawnPredicate<T> spawnPredicate);
+    <T extends Mob> void registrySpawnPlacement(Supplier<EntityType<T>> entityType, SpawnPlacements.Type placementType, Heightmap.Types heightTypes, SpawnPlacements.SpawnPredicate<T> spawnPredicate);
 
     static Iterable<Item> eggs() {
         return Iterables.unmodifiableIterable(EGGS.values());

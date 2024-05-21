@@ -28,7 +28,8 @@ dependencies {
 
     modRuntimeOnly("mezz.jei:jei-${minecraft_version}-fabric:${fabric_jei_version}")
 
-    modImplementation("curse.maven:forge-config-api-port-fabric-547434:${fabric_forge_config_api_version}")
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:config:${porting_lib_version}"))
+    modImplementation(include("io.github.fabricators_of_create.Porting-Lib:entity:${porting_lib_version}"))
     modCompileOnly("squeek.appleskin:appleskin-fabric:${fabric_appleskin_version}:api") { transitive = false }
 
     modImplementation("com.terraformersmc:modmenu:${fabric_modmenu_version}")

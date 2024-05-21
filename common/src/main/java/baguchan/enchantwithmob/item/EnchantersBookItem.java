@@ -2,6 +2,7 @@ package baguchan.enchantwithmob.item;
 
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.mobenchant.MobEnchant;
+import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWModRegistry;
 import baguchan.enchantwithmob.utils.MobEnchantUtils;
 import com.google.common.collect.Lists;
@@ -19,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -38,10 +40,11 @@ public class EnchantersBookItem extends Item {
 		super(properties);
 	}
 
-	/*@Override
+	@Override
 	public boolean isEnabled(FeatureFlagSet p_249172_) {
-		return super.isEnabled(p_249172_) && !EnchantConfig.COMMON.disableMobEnchantStuffItems.get();
-	}*/
+		return super.isEnabled(p_249172_) && !Services.CONFIG_HANDLER.getDisableMobEnchantStuffItems();
+	}
+
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
 		ItemStack stack = playerIn.getItemInHand(handIn);

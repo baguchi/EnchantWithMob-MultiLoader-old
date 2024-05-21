@@ -1,6 +1,8 @@
 package baguchan.enchantwithmob.mobenchant;
 
+import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWMobEnchants;
+import net.minecraft.world.entity.LivingEntity;
 
 public class SlowMobEnchant extends MobEnchant {
     public SlowMobEnchant(Properties properties) {
@@ -24,9 +26,13 @@ public class SlowMobEnchant extends MobEnchant {
         return true;
     }
 
+    @Override
+    public boolean isCompatibleMob(LivingEntity livingEntity) {
+        return super.isCompatibleMob(livingEntity) || Services.CONFIG_HANDLER.getBigYourSelf();
+    }
 
     @Override
     protected boolean canApplyTogether(MobEnchant ench) {
-        return super.canApplyTogether(ench) && ench != EWMobEnchants.SPEEDY.get() && ench != EWMobEnchants.HASTE.get();
+        return super.canApplyTogether(ench) && ench != EWMobEnchants.SPEEDY && ench != EWMobEnchants.HASTE;
     }
 }

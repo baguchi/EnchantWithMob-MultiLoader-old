@@ -1,5 +1,6 @@
 package baguchan.enchantwithmob.mobenchant;
 
+import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWModRegistry;
 import baguchan.enchantwithmob.utils.MobEnchantConfigUtils;
 import com.google.common.collect.Maps;
@@ -136,7 +137,7 @@ public class MobEnchant implements FeatureElement {
     }
 
     public boolean isDisabled() {
-        return false/*EnchantConfig.COMMON.DISABLE_ENCHANTS.get().contains(MobEnchants.getRegistry().getKey(this).toString())*/;
+        return Services.CONFIG_HANDLER.getDisableEnchants().contains(EWModRegistry.MOB_ENCHANT_REGISTRY.getKey(this).toString());
     }
 
     public boolean isCursedEnchant() {

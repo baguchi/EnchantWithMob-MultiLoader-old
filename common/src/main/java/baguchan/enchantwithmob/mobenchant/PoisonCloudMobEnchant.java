@@ -1,15 +1,11 @@
 package baguchan.enchantwithmob.mobenchant;
 
 
+import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWMobEnchants;
-import baguchan.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Witch;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 
 public class PoisonCloudMobEnchant extends MobEnchant {
@@ -32,12 +28,12 @@ public class PoisonCloudMobEnchant extends MobEnchant {
 
 	@Override
 	public boolean isCompatibleMob(LivingEntity livingEntity) {
-        return super.isCompatibleMob(livingEntity);//EnchantConfig.COMMON.WHITELIST_SHOOT_ENTITY.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(livingEntity.getType()).toString()) && !(livingEntity instanceof Witch) || super.isCompatibleMob(livingEntity);
+		return Services.CONFIG_HANDLER.getWhitelistShootEntity().contains(BuiltInRegistries.ENTITY_TYPE.getKey(livingEntity.getType()).toString()) && !(livingEntity instanceof Witch) || super.isCompatibleMob(livingEntity);
 	}
 
 	@Override
 	protected boolean canApplyTogether(MobEnchant ench) {
-		return ench != EWMobEnchants.POISON.get() && super.canApplyTogether(ench);
+		return ench != EWMobEnchants.POISON && super.canApplyTogether(ench);
 	}
 
 	@Override

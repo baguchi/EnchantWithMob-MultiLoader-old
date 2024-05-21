@@ -2,6 +2,7 @@ package baguchan.enchantwithmob.item;
 
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.mobenchant.MobEnchant;
+import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWItems;
 import baguchan.enchantwithmob.registry.EWModRegistry;
 import baguchan.enchantwithmob.utils.MobEnchantUtils;
@@ -18,6 +19,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -32,10 +34,10 @@ public class MobEnchantBookItem extends Item {
 		super(group);
 	}
 
-	/*@Override
+	@Override
 	public boolean isEnabled(FeatureFlagSet p_249172_) {
-		return super.isEnabled(p_249172_) && !EnchantConfig.COMMON.disableMobEnchantStuffItems.get();
-	}*/
+		return super.isEnabled(p_249172_) && !Services.CONFIG_HANDLER.getDisableMobEnchantStuffItems();
+	}
 
     /*
      * Implemented onRightClick (method) inside CommonEventHandler instead of this method
@@ -61,7 +63,7 @@ public class MobEnchantBookItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
 		ItemStack stack = playerIn.getItemInHand(handIn);
-		if (MobEnchantUtils.hasMobEnchant(stack)) {
+		if (Services.CONFIG_HANDLER.getEnchantYourSelf() && MobEnchantUtils.hasMobEnchant(stack)) {
 				if (playerIn instanceof IEnchantCap cap) {
 					boolean flag = MobEnchantUtils.addItemMobEnchantToEntity(stack, playerIn, playerIn, cap);
 
