@@ -10,10 +10,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -220,6 +217,16 @@ public class Enchanter extends SpellcasterIllager {
         }
     }
 
+    @Override
+    public boolean isAlliedTo(Entity $$0) {
+        if (super.isAlliedTo($$0)) {
+            return true;
+        } else {
+            return $$0 instanceof LivingEntity && ((LivingEntity) $$0).getMobType() == MobType.ILLAGER ? this.getTeam() == null && $$0.getTeam() == null : false;
+        }
+    }
+
+
     class CastingSpellGoal extends SpellcasterIllager.SpellcasterCastingSpellGoal {
         private CastingSpellGoal() {
             super();
@@ -266,7 +273,7 @@ public class Enchanter extends SpellcasterIllager {
                     //set enchant limit
                     if (enchanted_list.size() < 5) {
                         LivingEntity target = list.get(Enchanter.this.random.nextInt(list.size()));
-                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || Enchanter.this.getTeam() == null && target.getTeam() == null)) {
+                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && Enchanter.this.isAlliedTo(target) && target.isAlliedTo(Enchanter.this)) {
                             Enchanter.this.setEnchantTarget(target);
                             Enchanter.this.level().broadcastEntityEvent(Enchanter.this, (byte) 61);
                             return true;
