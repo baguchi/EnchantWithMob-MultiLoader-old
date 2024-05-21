@@ -1,18 +1,15 @@
 package baguchan.enchantwithmob.platform;
 
-import baguchan.enchantwithmob.EWConstants;
+import baguchan.enchantwithmob.platform.services.IRegistrar;
 import baguchan.enchantwithmob.registry.*;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
-import baguchan.enchantwithmob.platform.services.IRegistrar;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.NewRegistryEvent;
@@ -32,6 +29,7 @@ public class ForgeRegistrar implements IRegistrar {
         EWItems.register();
         EWEntityTypes.register();
         EWMobEnchants.init();
+        EWCreativeTabs.register();
         EwSoundEvents.register();
     }
 

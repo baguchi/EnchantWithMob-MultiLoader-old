@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = WoodlandMansionPieces.WoodlandMansionPiece.class, remap = false)
+@Mixin(value = WoodlandMansionPieces.WoodlandMansionPiece.class)
 public class WoodlandMansionPieceMixin {
 	@Inject(method = "handleDataMarker", at = @At("HEAD"), cancellable = true)
 	protected void handleDataMarker(String p_230213_, BlockPos p_230214_, ServerLevelAccessor p_230215_, RandomSource p_230216_, BoundingBox p_230217_, CallbackInfo callbackInfo) {

@@ -1,7 +1,6 @@
 package baguchan.enchantwithmob.mixins.client;
 
 import baguchan.enchantwithmob.api.IEnchantVisual;
-import baguchan.enchantwithmob.client.render.layer.EnchantLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -20,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static baguchan.enchantwithmob.client.render.EnchantRenderType.enchantSwirl;
 
-@Mixin(value = EvokerFangsRenderer.class, remap = false)
+@Mixin(value = EvokerFangsRenderer.class)
 public class EvokerFangsRendererMixin {
 
 	@Shadow

@@ -8,13 +8,9 @@ import baguchan.enchantwithmob.utils.MobEnchantUtils;
 import baguchan.enchantwithmob.utils.MobEnchantmentData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -30,8 +26,8 @@ import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
@@ -113,6 +109,7 @@ public class Enchanter extends SpellcasterIllager {
             super.handleEntityEvent(p_21375_);
         }
     }
+
     public static AttributeSupplier.Builder createAttributeMap() {
         return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, (double) 0.3F).add(Attributes.MAX_HEALTH, 24.0D).add(Attributes.FOLLOW_RANGE, 24.0D).add(Attributes.ATTACK_DAMAGE, 2.0F);
     }
@@ -220,7 +217,7 @@ public class Enchanter extends SpellcasterIllager {
         }
     }
 
-    class CastingSpellGoal extends SpellcasterCastingSpellGoal {
+    class CastingSpellGoal extends SpellcasterIllager.SpellcasterCastingSpellGoal {
         private CastingSpellGoal() {
             super();
         }
@@ -236,7 +233,7 @@ public class Enchanter extends SpellcasterIllager {
     }
 
 
-    public class SpellGoal extends SpellcasterUseSpellGoal {
+    public class SpellGoal extends SpellcasterIllager.SpellcasterUseSpellGoal {
         private final Predicate<LivingEntity> fillter = (entity) -> {
             return !(entity instanceof Enchanter) && entity instanceof IEnchantCap enchantCap && !enchantCap.getEnchantCap().hasEnchant();
         };
@@ -266,7 +263,7 @@ public class Enchanter extends SpellcasterIllager {
                     //set enchant limit
                     if (enchanted_list.size() < 5) {
                         LivingEntity target = list.get(Enchanter.this.random.nextInt(list.size()));
-                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || target instanceof Raider && target.getTeam() == null)) {
+                        if (target != Enchanter.this.getTarget() && target != Enchanter.this && target.isAlliedTo(Enchanter.this) && Enchanter.this.isAlliedTo(target) && (target.getTeam() == Enchanter.this.getTeam() || target.getMobType() == MobType.ILLAGER && target.getTeam() == null)) {
                             Enchanter.this.setEnchantTarget(target);
                             Enchanter.this.level().broadcastEntityEvent(Enchanter.this, (byte) 61);
                             return true;
@@ -320,8 +317,8 @@ public class Enchanter extends SpellcasterIllager {
             return SoundEvents.BOOK_PAGE_TURN;
         }
 
-        protected IllagerSpell getSpell() {
-            return IllagerSpell.WOLOLO;
+        protected SpellcasterIllager.IllagerSpell getSpell() {
+            return SpellcasterIllager.IllagerSpell.WOLOLO;
         }
     }
 
@@ -368,7 +365,7 @@ public class Enchanter extends SpellcasterIllager {
 
         AttackGoal(Enchanter enchanter) {
             this.enchanter = enchanter;
-            this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
         }
 
         @Override
@@ -379,13 +376,13 @@ public class Enchanter extends SpellcasterIllager {
             } else if (!livingentity.isAlive()) {
                 return false;
             } else {
-                return this.canPerformAttack(livingentity);
+                return this.getAttackReachSqr(livingentity) >= this.enchanter.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ());
             }
         }
 
         @Override
         public boolean canContinueToUse() {
-            return super.canContinueToUse() && this.tick < 20;
+            return super.canContinueToUse() && this.tick < this.enchanter.attackAnimationLength;
         }
 
         @Override
@@ -407,7 +404,7 @@ public class Enchanter extends SpellcasterIllager {
 
             if (livingentity != null && livingentity.isAlive()) {
                 this.enchanter.getLookControl().setLookAt(livingentity, 30.0F, 30.0F);
-                if (this.canPerformAttack(livingentity)) {
+                if (this.getAttackReachSqr(livingentity) >= this.enchanter.distanceToSqr(livingentity.getX(), livingentity.getY(), livingentity.getZ())) {
                     if (this.tick == this.enchanter.attackAnimationActionPoint) {
                         this.enchanter.swing(InteractionHand.MAIN_HAND);
                         this.enchanter.doHurtTarget(livingentity);
@@ -419,8 +416,8 @@ public class Enchanter extends SpellcasterIllager {
             ++this.tick;
         }
 
-        protected boolean canPerformAttack(LivingEntity p_301299_) {
-            return this.enchanter.isWithinMeleeAttackRange(p_301299_) && this.enchanter.getSensing().hasLineOfSight(p_301299_);
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
+            return (double) (this.enchanter.getBbWidth() * 1.5F * this.enchanter.getBbWidth() * 1.5F + attackTarget.getBbWidth());
         }
 
         @Override
@@ -428,6 +425,4 @@ public class Enchanter extends SpellcasterIllager {
             return true;
         }
     }
-
-
 }

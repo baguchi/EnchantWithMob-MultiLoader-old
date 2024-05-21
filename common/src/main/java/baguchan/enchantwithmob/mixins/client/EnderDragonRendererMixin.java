@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = EnderDragonRenderer.class, remap = false)
+@Mixin(value = EnderDragonRenderer.class)
 public class EnderDragonRendererMixin {
 
 	@Shadow

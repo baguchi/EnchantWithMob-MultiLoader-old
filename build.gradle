@@ -181,7 +181,7 @@ subprojects {
                 "fabric_jei_version_range"              : fabric_jei_version_range,
                 "fabric_appleskin_version_range"        : fabric_appleskin_version_range,
                 "fabric_modmenu_version_range"          : fabric_modmenu_version_range,
-                "fabric_forge_config_api_range"          : fabric_forge_config_api_version_range
+                "fabric_forge_config_api_version_range": fabric_forge_config_api_version_range
         ]
 
         filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {

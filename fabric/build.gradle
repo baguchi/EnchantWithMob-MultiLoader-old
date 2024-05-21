@@ -36,8 +36,6 @@ dependencies {
 }
 
 loom {
-    splitEnvironmentSourceSets()
-
     mods {
         mod_id {
             sourceSet sourceSets.main

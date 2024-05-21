@@ -17,6 +17,7 @@ public class FabricRegistrar implements IRegistrar {
         EWItems.register();
         EWEntityTypes.register();
         EWMobEnchants.init();
+        EWCreativeTabs.register();
         EwSoundEvents.register();
     }
 

@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -73,7 +71,6 @@ public class EnchantRenderType extends RenderType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected static final class CompositeState {
         private final EmptyTextureStateShard textureState;
         private final RenderStateShard.ShaderStateShard shaderState;
@@ -117,7 +114,6 @@ public class EnchantRenderType extends RenderType {
             return new CompositeState.CompositeStateBuilder();
         }
 
-        @OnlyIn(Dist.CLIENT)
         public static class CompositeStateBuilder {
             private EmptyTextureStateShard textureState;
             private RenderStateShard.ShaderStateShard shaderState;
@@ -224,7 +220,6 @@ public class EnchantRenderType extends RenderType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static enum OutlineProperty {
         NONE("none"),
         IS_OUTLINE("is_outline"),
@@ -241,7 +236,6 @@ public class EnchantRenderType extends RenderType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected static class EmptyTextureStateShard extends RenderStateShard {
         public EmptyTextureStateShard(Runnable $$0, Runnable $$1) {
             super("texture", $$0, $$1);
@@ -258,7 +252,6 @@ public class EnchantRenderType extends RenderType {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected static class TextureStateShard extends EmptyTextureStateShard {
         private final Optional<ResourceLocation> texture;
         private final boolean blur;

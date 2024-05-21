@@ -18,13 +18,12 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +40,8 @@ public class MobEnchantBookItem extends Item {
     /*
      * Implemented onRightClick (method) inside CommonEventHandler instead of this method
      */
-    /*@Override
+
+	/*@Override
     public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity playerIn, LivingEntity target, Hand hand) {
         if (MobEnchantUtils.hasMobEnchant(stack)) {
             target.getCapability(EnchantWithMob.MOB_ENCHANT_CAP).ifPresent(cap ->
@@ -122,7 +122,7 @@ public class MobEnchantBookItem extends Item {
 					ChatFormatting[] textformatting = new ChatFormatting[]{ChatFormatting.AQUA};
 					ChatFormatting[] textformatting3 = new ChatFormatting[]{ChatFormatting.RED};
 
-					tooltip.add(Component.translatable("mobenchant." + EWModRegistry.MOB_ENCHANT_REGISTRY.getKey(mobEnchant).getNamespace() + "." + EWModRegistry.MOB_ENCHANT_REGISTRY.getKey(mobEnchant).getPath()).withStyle(mobEnchant.isCursedEnchant() ? textformatting3 : textformatting).append(" ").append(Component.translatable("enchantment.level." + enchantmentLevel).withStyle(mobEnchant.isCursedEnchant() ? textformatting3 : textformatting)));
+					tooltip.add(Component.translatable("mob_enchant." + EWModRegistry.MOB_ENCHANT_REGISTRY.getKey(mobEnchant).getNamespace() + "." + EWModRegistry.MOB_ENCHANT_REGISTRY.getKey(mobEnchant).getPath()).withStyle(mobEnchant.isCursedEnchant() ? textformatting3 : textformatting).append(" ").append(Component.translatable("enchantment.level." + enchantmentLevel).withStyle(mobEnchant.isCursedEnchant() ? textformatting3 : textformatting)));
 				}
             }
 

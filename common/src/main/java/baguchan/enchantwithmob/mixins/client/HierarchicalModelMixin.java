@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-@Mixin(value = HierarchicalModel.class, remap = false)
+@Mixin(value = HierarchicalModel.class)
 public class HierarchicalModelMixin implements IEnchantedTime {
     private float differentTime = 1.0F;
 

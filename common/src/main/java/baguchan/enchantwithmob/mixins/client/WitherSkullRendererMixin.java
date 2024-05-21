@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static baguchan.enchantwithmob.client.render.EnchantRenderType.enchantSwirl;
 
-@Mixin(value = WitherSkullRenderer.class, remap = false)
+@Mixin(value = WitherSkullRenderer.class)
 public class WitherSkullRendererMixin {
 
 	@Shadow

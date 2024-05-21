@@ -1,6 +1,5 @@
 package baguchan.enchantwithmob.mobenchant;
 
-import baguchan.enchantwithmob.registry.EWMobEnchants;
 import baguchan.enchantwithmob.registry.EWModRegistry;
 import baguchan.enchantwithmob.utils.MobEnchantConfigUtils;
 import com.google.common.collect.Maps;
@@ -19,8 +18,8 @@ import net.minecraft.world.flag.FeatureElement;
 import net.minecraft.world.flag.FeatureFlag;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.UUID;
 

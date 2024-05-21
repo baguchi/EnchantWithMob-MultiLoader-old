@@ -6,6 +6,6 @@ public class EnchantWithMobClientFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-
+        EnchantWithMobClient.client();
     }
 }

@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = ArrowRenderer.class, remap = false)
+@Mixin(value = ArrowRenderer.class)
 public class ArrowRendererMixin<T extends AbstractArrow> {
 
 	@Inject(method = "render", at = @At("TAIL"))
