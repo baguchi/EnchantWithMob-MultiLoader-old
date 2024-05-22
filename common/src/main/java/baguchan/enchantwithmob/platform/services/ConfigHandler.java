@@ -22,4 +22,19 @@ public interface ConfigHandler {
     List<? extends String> getBlacklistPlayerEnchant();
 
     List<? extends String> getWhitelistShootEntity();
+
+
+    List<? extends String> getAlwayEnchantableAncientMobs();
+
+    List<? extends String> getAlwayEnchantableMobs();
+
+    boolean getSpawnEnchantedAnimal();
+
+    boolean getNaturalSpawnEnchantedMob();
+
+    List<? extends String> getEnchantOnSpawnExclusionMobs();
+
+    double getDifficultyBasePercent();
+
+    double getEffectiveBasePercent();
 }

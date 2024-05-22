@@ -2,14 +2,18 @@ package baguchan.enchantwithmob.network;
 
 import baguchan.enchantwithmob.utils.ResourceLocationHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ForgeNetworkHelper {
@@ -34,7 +38,17 @@ public class ForgeNetworkHelper {
 
     public static <T extends Packet> void sendToPlayer(ServerPlayer playerEntity, T packet) {
         SIMPLE_CHANNEL.sendTo(packet, playerEntity.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
-        SIMPLE_CHANNEL.sendTo(packet, playerEntity.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    }
+
+    public static <T extends Packet> void sendToEntity(Entity entity, T packet) {
+        SIMPLE_CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), packet);
+    }
+
+    public static Consumer<net.minecraft.network.protocol.Packet<?>> trackingEntityAndSelf(Supplier<Entity> entitySupplier) {
+        return (p) -> {
+            Entity entity = (Entity) entitySupplier.get();
+            ((ServerChunkCache) entity.getCommandSenderWorld().getChunkSource()).broadcastAndSend(entity, p);
+        };
     }
 
     public static <T extends Packet> void sendToAllPlayers(List<ServerPlayer> playerEntities, T packet) {

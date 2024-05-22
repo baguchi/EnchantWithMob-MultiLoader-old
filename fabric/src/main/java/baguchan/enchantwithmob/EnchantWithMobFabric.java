@@ -2,7 +2,11 @@ package baguchan.enchantwithmob;
 
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.api.IEnchantedProjectile;
+import baguchan.enchantwithmob.command.MobEnchantArgument;
+import baguchan.enchantwithmob.command.MobEnchantingCommand;
 import baguchan.enchantwithmob.network.FabricNetworkHelper;
+import baguchan.enchantwithmob.network.packet.MobEnchantedMessage;
+import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWEntityTypes;
 import baguchan.enchantwithmob.registry.EWItems;
 import baguchan.enchantwithmob.registry.EWMobEnchants;
@@ -13,11 +17,16 @@ import io.github.fabricators_of_create.porting_lib.config.ConfigRegistry;
 import io.github.fabricators_of_create.porting_lib.config.ConfigType;
 import io.github.fabricators_of_create.porting_lib.entity.events.EntityEvents;
 import io.github.fabricators_of_create.porting_lib.entity.events.LivingEntityEvents;
+import io.github.fabricators_of_create.porting_lib.entity.events.PlayerEvents;
 import io.github.fabricators_of_create.porting_lib.entity.events.ProjectileImpactEvent;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.mixin.command.ArgumentTypesAccessor;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -26,17 +35,9 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.WaterAnimal;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -155,98 +156,6 @@ public class EnchantWithMobFabric implements ModInitializer {
             }
             return i;
         });
-        LivingEntityEvents.CHECK_SPAWN.register((entity, world, x, y, z, spawner, spawnReason) -> {
-            if (entity instanceof IEnchantCap cap) {
-                if (!world.isClientSide()) {
-                    LivingEntity livingEntity = entity;
-
-                    if (isSpawnAlwayEnchantableAncientEntity(livingEntity)) {
-                        int i = 0;
-                        float difficultScale = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
-                        switch (world.getDifficulty()) {
-                            case EASY:
-                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 30);
-
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
-                                break;
-                            case NORMAL:
-                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(15)) * difficultScale, 1, 60);
-
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
-                                break;
-                            case HARD:
-                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(20)) * difficultScale, 1, 100);
-
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, true);
-                                break;
-                        }
-
-                        livingEntity.setHealth(livingEntity.getMaxHealth());
-                    }
-
-                    // On add MobEnchant Alway Enchantable Mob
-                    if (isSpawnAlwayEnchantableEntity(livingEntity)) {
-                        int i = 0;
-                        float difficultScale = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
-                        switch (world.getDifficulty()) {
-                            case EASY:
-                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
-
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
-                                break;
-                            case NORMAL:
-                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 40);
-
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
-                                break;
-                            case HARD:
-                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 50);
-
-                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, false, false);
-                                break;
-                        }
-
-                        livingEntity.setHealth(livingEntity.getMaxHealth());
-                    }
-
-
-                    //if (EnchantConfig.COMMON.naturalSpawnEnchantedMob.get() && isSpawnEnchantableEntity(entity)) {
-                    if (EnchantConfig.COMMON.naturalSpawnEnchantedMob.get() && isSpawnEnchantableEntity(entity)) {
-
-                        if (!(livingEntity instanceof Animal) && !(livingEntity instanceof WaterAnimal) || EnchantConfig.COMMON.spawnEnchantedAnimal.get()) {
-                            if (spawnReason != MobSpawnType.BREEDING && spawnReason != MobSpawnType.CONVERSION && spawnReason != MobSpawnType.STRUCTURE && spawnReason != MobSpawnType.MOB_SUMMONED) {
-                                if (world.getRandom().nextFloat() < (EnchantConfig.COMMON.difficultyBasePercent.get() * world.getDifficulty().getId()) + world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() * EnchantConfig.COMMON.effectiveBasePercent.get()) {
-                                    if (!world.isClientSide()) {
-                                        int i = 0;
-                                        float difficultScale = world.getCurrentDifficultyAt(livingEntity.blockPosition()).getEffectiveDifficulty() - 0.2F;
-                                        switch (world.getDifficulty()) {
-                                            case EASY:
-                                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 20);
-
-                                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, true, false);
-                                                break;
-                                            case NORMAL:
-                                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(5)) * difficultScale, 1, 40);
-
-                                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, true, false);
-                                                break;
-                                            case HARD:
-                                                i = (int) Mth.clamp((5 + world.getRandom().nextInt(10)) * difficultScale, 1, 50);
-
-                                                MobEnchantUtils.addRandomEnchantmentToEntity(livingEntity, cap, world.getRandom(), i, true, true, false);
-                                                break;
-                                        }
-
-                                        livingEntity.setHealth(livingEntity.getMaxHealth());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return true;
-        });
         ProjectileImpactEvent.PROJECTILE_IMPACT.register((event) -> {
 
             Projectile projectile = event.getProjectile();
@@ -308,8 +217,25 @@ public class EnchantWithMobFabric implements ModInitializer {
             }
             return true;
         });
-        Loot
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            if (environment.includeIntegrated)
+                MobEnchantingCommand.register(dispatcher);
+        });
+        ArgumentTypesAccessor.fabric_getClassMap().put(
+                MobEnchantArgument.class, SingletonArgumentInfo.contextFree(MobEnchantArgument::mobEnchantment));
 
+        PlayerEvents.LOGGED_IN.register(player -> {
+            if (player instanceof ServerPlayer serverPlayer) {
+                if (!player.level().isClientSide()) {
+                    if (serverPlayer instanceof IEnchantCap cap) {
+                        for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
+                            Services.NETWORK_HANDLER.sendToEntity(serverPlayer, new MobEnchantedMessage(serverPlayer, cap.getEnchantCap().getMobEnchants().get(i)));
+
+                        }
+                    }
+                }
+            }
+        });
         ConfigRegistry.registerConfig(EWConstants.MOD_ID, ConfigType.COMMON, EnchantConfig.COMMON_SPEC);
     }
 
@@ -342,17 +268,5 @@ public class EnchantWithMobFabric implements ModInitializer {
         }
 
         level.addFreshEntity(newProjectile);
-    }
-
-    private static boolean isSpawnAlwayEnchantableEntity(Entity entity) {
-        return !(entity instanceof Player) && !(entity instanceof ArmorStand) && !(entity instanceof Boat) && !(entity instanceof Minecart) && EnchantConfig.COMMON.alwayEnchantableMobs.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
-    }
-
-    private static boolean isSpawnAlwayEnchantableAncientEntity(Entity entity) {
-        return !(entity instanceof Player) && !(entity instanceof ArmorStand) && !(entity instanceof Boat) && !(entity instanceof Minecart) && EnchantConfig.COMMON.alwayEnchantableAncientMobs.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
-    }
-
-    private static boolean isSpawnEnchantableEntity(Entity entity) {
-        return !(entity instanceof Player) && !(entity instanceof ArmorStand) && !(entity instanceof Boat) && !(entity instanceof Minecart) && !EnchantConfig.COMMON.enchantOnSpawnExclusionMobs.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
     }
 }

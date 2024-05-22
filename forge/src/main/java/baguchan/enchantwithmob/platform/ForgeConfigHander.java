@@ -51,4 +51,40 @@ public class ForgeConfigHander implements ConfigHandler {
     public List<? extends String> getWhitelistShootEntity() {
         return EnchantConfig.COMMON.whitelistShootEntity.get();
     }
+
+
+    @Override
+    public List<? extends String> getAlwayEnchantableAncientMobs() {
+        return EnchantConfig.COMMON.alwayEnchantableAncientMobs.get();
+    }
+
+    @Override
+    public List<? extends String> getAlwayEnchantableMobs() {
+        return EnchantConfig.COMMON.alwayEnchantableMobs.get();
+    }
+
+    @Override
+    public boolean getSpawnEnchantedAnimal() {
+        return EnchantConfig.COMMON.spawnEnchantedAnimal.get();
+    }
+
+    @Override
+    public boolean getNaturalSpawnEnchantedMob() {
+        return EnchantConfig.COMMON.naturalSpawnEnchantedMob.get();
+    }
+
+    @Override
+    public List<? extends String> getEnchantOnSpawnExclusionMobs() {
+        return EnchantConfig.COMMON.enchantOnSpawnExclusionMobs.get();
+    }
+
+    @Override
+    public double getDifficultyBasePercent() {
+        return EnchantConfig.COMMON.difficultyBasePercent.get();
+    }
+
+    @Override
+    public double getEffectiveBasePercent() {
+        return EnchantConfig.COMMON.effectiveBasePercent.get();
+    }
 }

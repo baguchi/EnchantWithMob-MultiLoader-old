@@ -20,7 +20,7 @@ public interface Packet {
         map.put(ResourceLocationHelper.modLoc("mob_enchanted_from_owner").toString(), new Handler<>(MobEnchantFromOwnerMessage.class, PacketDirection.SERVER_TO_CLIENT, MobEnchantFromOwnerMessage::write, MobEnchantFromOwnerMessage::readFromPacket, MobEnchantFromOwnerMessage::handle));
         map.put(ResourceLocationHelper.modLoc("remove_all_mob_enchant").toString(), new Handler<>(RemoveAllMobEnchantMessage.class, PacketDirection.SERVER_TO_CLIENT, RemoveAllMobEnchantMessage::write, RemoveAllMobEnchantMessage::readFromPacket, RemoveAllMobEnchantMessage::handle));
         map.put(ResourceLocationHelper.modLoc("remove_all_mob_enchant_from_owner").toString(), new Handler<>(RemoveMobEnchantOwnerMessage.class, PacketDirection.SERVER_TO_CLIENT, RemoveMobEnchantOwnerMessage::write, RemoveMobEnchantOwnerMessage::readFromPacket, RemoveMobEnchantOwnerMessage::handle));
-        map.put(ResourceLocationHelper.modLoc("sync_mob_enchant").toString(), new Handler<>(SyncEntityPacketToServer.class, PacketDirection.SERVER_TO_CLIENT, SyncEntityPacketToServer::write, SyncEntityPacketToServer::read, SyncEntityPacketToServer::handle));
+        map.put(ResourceLocationHelper.modLoc("sync_mob_enchant").toString(), new Handler<>(SyncEntityPacketToServer.class, PacketDirection.CLIENT_TO_SERVER, SyncEntityPacketToServer::write, SyncEntityPacketToServer::read, SyncEntityPacketToServer::handle));
     });
 
 

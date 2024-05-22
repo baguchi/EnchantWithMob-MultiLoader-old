@@ -448,7 +448,7 @@ public class CommonEventHandler {
         if (player instanceof ServerPlayer serverPlayer) {
             if (player instanceof IEnchantCap cap) {
                 for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
-                    Services.NETWORK_HANDLER.sendToClient(serverPlayer, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
+                    Services.NETWORK_HANDLER.sendToEntity(serverPlayer, new MobEnchantedMessage(player, cap.getEnchantCap().getMobEnchants().get(i)));
 
                 }
             }
@@ -463,7 +463,7 @@ public class CommonEventHandler {
             if (playerEntity instanceof IEnchantCap cap) {
                 if (!playerEntity.level().isClientSide()) {
                     for (int i = 0; i < cap.getEnchantCap().getMobEnchants().size(); i++) {
-                        Services.NETWORK_HANDLER.sendToClient(serverPlayer, new MobEnchantedMessage(playerEntity, cap.getEnchantCap().getMobEnchants().get(i)));
+                        Services.NETWORK_HANDLER.sendToEntity(serverPlayer, new MobEnchantedMessage(playerEntity, cap.getEnchantCap().getMobEnchants().get(i)));
                     }
                 }
             }

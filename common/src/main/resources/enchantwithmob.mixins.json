@@ -17,6 +17,7 @@
     "client.EntityRendererMixin",
     "client.HierarchicalModelMixin",
     "client.LivingEntityRendererMixin",
+    "client.SlimeRendererMixin",
     "client.WitherSkullRendererMixin"
   ],
   "injectors": {

@@ -11,15 +11,20 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class FabricNetworkHelper {
 
@@ -77,6 +82,31 @@ public class FabricNetworkHelper {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
         encoder.accept(packet, buf);
         ClientPlayNetworking.send(packetId, buf);
+    }
+
+    public static <MSG extends Packet> void sendToEntity(Entity entity, MSG packet) {
+        ResourceLocation packetId = PACKET_IDS.get(packet.getClass());
+        @SuppressWarnings("unchecked")
+        BiConsumer<MSG, FriendlyByteBuf> encoder = (BiConsumer<MSG, FriendlyByteBuf>) ENCODERS.get(packet.getClass());
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        encoder.accept(packet, buf);
+        collectPacketsToServer(ofTrackingEntity(() -> entity), packetId, buf);
+    }
+
+    public static void collectPacketsToServer(Consumer<net.minecraft.network.protocol.Packet> sink, ResourceLocation id, FriendlyByteBuf buf) {
+        sink.accept(toPacketToServer(id, buf));
+
+    }
+
+    public static net.minecraft.network.protocol.Packet<ClientGamePacketListener> toPacketToServer(ResourceLocation id, FriendlyByteBuf buf) {
+        return ServerPlayNetworking.createS2CPacket(id, buf);
+    }
+
+    public static Consumer<net.minecraft.network.protocol.Packet> ofTrackingEntity(final Supplier<Entity> entitySupplier) {
+        return packet -> {
+            final Entity entity = entitySupplier.get();
+            ((ServerChunkCache) entity.getCommandSenderWorld().getChunkSource()).broadcastAndSend(entity, packet);
+        };
     }
 
     public record ClientProxy() {

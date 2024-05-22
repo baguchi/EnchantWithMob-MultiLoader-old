@@ -19,6 +19,7 @@ public class FabricRegistrar implements IRegistrar {
         EWMobEnchants.init();
         EWCreativeTabs.register();
         EwSoundEvents.register();
+        EwArgumentTypeInfos.register();
     }
 
     @Override

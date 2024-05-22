@@ -2,6 +2,7 @@ package baguchan.enchantwithmob.platform.services;
 
 import baguchan.enchantwithmob.network.Packet;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public interface INetworkHandler {
             sendToClient(player, packet);
         }
     }
+
+    <P extends Packet> void sendToEntity(Entity player, P packet);
+
 
     <P extends Packet> void sendToServer(P packet);
 }

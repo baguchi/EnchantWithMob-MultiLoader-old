@@ -8,7 +8,6 @@ import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.registry.EWMobEnchants;
 import baguchan.enchantwithmob.utils.MobEnchantUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -40,6 +39,12 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
         MobEnchantCapability mobEnchantCapability = new MobEnchantCapability();
         mobEnchantCapability.deserializeNBT(nbt.getCompound("MobEnchantData"));
         this.setEnchantCap(mobEnchantCapability);
+        if (this.level() != null && !this.level().isClientSide) {
+            for (int i = 0; i < this.getEnchantCap().getMobEnchants().size(); i++) {
+                MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
+                Services.NETWORK_HANDLER.sendToEntity(this, message);
+            }
+        }
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
@@ -62,7 +67,7 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
         if (!this.level().isClientSide) {
             for (int i = 0; i < this.getEnchantCap().getMobEnchants().size(); i++) {
                 MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
-                Services.NETWORK_HANDLER.sendToAllClients(((ServerLevel) level()).players(), message);
+                Services.NETWORK_HANDLER.sendToEntity(entity, message);
             }
         }
     }
