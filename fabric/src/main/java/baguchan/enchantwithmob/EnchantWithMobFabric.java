@@ -308,6 +308,7 @@ public class EnchantWithMobFabric implements ModInitializer {
             }
             return true;
         });
+        Loot
 
         ConfigRegistry.registerConfig(EWConstants.MOD_ID, ConfigType.COMMON, EnchantConfig.COMMON_SPEC);
     }
