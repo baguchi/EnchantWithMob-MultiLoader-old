@@ -14,10 +14,10 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
-import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
 
 public class ModSpawnUtil {
-    public static void finalizeSpawn(Mob entity, ServerLevelAccessor level, MobSpawnType mobSpawnType) {
+    public static void finalizeSpawn(Mob entity, LevelAccessor level, MobSpawnType mobSpawnType) {
         if (entity instanceof IEnchantCap cap) {
             if (!level.isClientSide()) {
                 LivingEntity livingEntity = entity;

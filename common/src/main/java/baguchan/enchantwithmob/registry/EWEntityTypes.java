@@ -25,6 +25,6 @@ public class EWEntityTypes {
     }
 
    private static <T extends Entity, E extends EntityType<? extends T>> Supplier<E> create(String key, Supplier<E> builder) {
-        return Services.REGISTRAR.<E>registerObject(modLoc(key), builder, (Registry<E>) BuiltInRegistries.ENTITY_TYPE);
+       return Services.REGISTRAR.registerObject(modLoc(key), builder, (Registry<E>) BuiltInRegistries.ENTITY_TYPE);
     }
 }

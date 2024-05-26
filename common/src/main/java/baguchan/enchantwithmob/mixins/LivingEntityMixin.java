@@ -39,12 +39,6 @@ public abstract class LivingEntityMixin extends Entity implements IEnchantCap, I
         MobEnchantCapability mobEnchantCapability = new MobEnchantCapability();
         mobEnchantCapability.deserializeNBT(nbt.getCompound("MobEnchantData"));
         this.setEnchantCap(mobEnchantCapability);
-        if (this.level() != null && !this.level().isClientSide) {
-            for (int i = 0; i < this.getEnchantCap().getMobEnchants().size(); i++) {
-                MobEnchantedMessage message = new MobEnchantedMessage(this, this.getEnchantCap().getMobEnchants().get(i));
-                Services.NETWORK_HANDLER.sendToEntity(this, message);
-            }
-        }
     }
 
     @Inject(method = "tick", at = @At("HEAD"))

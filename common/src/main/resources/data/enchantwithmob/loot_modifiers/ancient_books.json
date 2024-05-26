@@ -1,0 +1,10 @@
+{
+  "type": "bagus_lib:loot_in_loot",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/ancient_city"
+    }
+  ],
+  "loot_table": "enchantwithmob:inject/mob_enchant_ancient"
+}

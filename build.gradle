@@ -182,7 +182,9 @@ subprojects {
                 "fabric_jei_version_range"              : fabric_jei_version_range,
                 "fabric_appleskin_version_range"        : fabric_appleskin_version_range,
                 "fabric_modmenu_version_range"          : fabric_modmenu_version_range,
-                "porting_lib_version_range": porting_lib_version_range
+                "porting_lib_version_range": porting_lib_version_range,
+                "bagus_lib_version"        : bagus_lib_version,
+                "bagus_lib_version_range"  : bagus_lib_version_range
         ]
 
         filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', '*.mixins.json']) {

@@ -4,6 +4,7 @@ import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.api.IEnchantedProjectile;
 import baguchan.enchantwithmob.command.MobEnchantArgument;
 import baguchan.enchantwithmob.command.MobEnchantingCommand;
+import baguchan.enchantwithmob.loot.MobEnchantWithLevelsFunction;
 import baguchan.enchantwithmob.network.FabricNetworkHelper;
 import baguchan.enchantwithmob.network.packet.MobEnchantedMessage;
 import baguchan.enchantwithmob.platform.Services;
@@ -12,6 +13,7 @@ import baguchan.enchantwithmob.registry.EWItems;
 import baguchan.enchantwithmob.registry.EWMobEnchants;
 import baguchan.enchantwithmob.utils.MobEnchantCombatRules;
 import baguchan.enchantwithmob.utils.MobEnchantUtils;
+import baguchan.enchantwithmob.utils.ModSpawnUtil;
 import fuzs.extensibleenums.api.extensibleenums.v1.BuiltInEnumFactories;
 import io.github.fabricators_of_create.porting_lib.config.ConfigRegistry;
 import io.github.fabricators_of_create.porting_lib.config.ConfigType;
@@ -22,6 +24,8 @@ import io.github.fabricators_of_create.porting_lib.entity.events.ProjectileImpac
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.fabricmc.fabric.mixin.command.ArgumentTypesAccessor;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,6 +44,9 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -88,6 +95,10 @@ public class EnchantWithMobFabric implements ModInitializer {
             }
             return InteractionResult.PASS;
         });
+        LivingEntityEvents.CHECK_SPAWN.register(((entity, world, x, y, z, spawner, spawnReason) -> {
+            ModSpawnUtil.finalizeSpawn(entity, world, spawnReason);
+            return true;
+        }));
 
         LivingEntityEvents.HURT.register((source, damaged, amount) -> {
             LivingEntity livingEntity = damaged;
@@ -236,6 +247,23 @@ public class EnchantWithMobFabric implements ModInitializer {
                 }
             }
         });
+        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
+            {
+                if (id.toString().equals("minecraft:archaeology/desert_pyramid")) {
+                    tableBuilder = FabricLootTableBuilder.copyOf(tableBuilder.build()).modifyPools(poolBuilder -> poolBuilder.with(LootItem.lootTableItem(EWItems.MOB_ENCHANT_BOOK.get()).apply(MobEnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(10, 20))).build()));
+                }
+                if (id.toString().equals("minecraft:chests/ancient_city")) {
+                    tableBuilder = FabricLootTableBuilder.copyOf(tableBuilder.build()).pool(LootPool.lootPool().add(LootItem.lootTableItem(EWItems.MOB_ENCHANT_BOOK.get()).apply(MobEnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(30, 40)))).build());
+                }
+                if (id.toString().equals("minecraft:chests/wood_land_mansion")) {
+                    tableBuilder = FabricLootTableBuilder.copyOf(tableBuilder.build()).pool(LootPool.lootPool().add(LootItem.lootTableItem(EWItems.MOB_ENCHANT_BOOK.get()).apply(MobEnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(20, 30)))).add(LootItem.lootTableItem(EWItems.ENCHANTERS_BOOK.get()).apply(MobEnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(20, 30)))).build());
+                }
+                if (id.toString().equals("minecraft:chests/stronghold_library")) {
+                    tableBuilder = FabricLootTableBuilder.copyOf(tableBuilder.build()).pool(LootPool.lootPool().add(LootItem.lootTableItem(EWItems.MOB_ENCHANT_BOOK.get()).apply(MobEnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(20, 30)))).build());
+                }
+            }
+        });
+
         ConfigRegistry.registerConfig(EWConstants.MOD_ID, ConfigType.COMMON, EnchantConfig.COMMON_SPEC);
     }
 

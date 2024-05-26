@@ -14,7 +14,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
@@ -32,16 +31,17 @@ public class ForgeRegistrar implements IRegistrar {
         EWCreativeTabs.register();
         EwSoundEvents.register();
         EwArgumentTypeInfos.register();
+        EwLootItemFunctions.init();
     }
 
     @Override
-    public <T> RegistryObject<T> registerObject(ResourceLocation objId, Supplier<T> objSup, Registry<T> targetRegistry) {
+    public <V, T extends V> Supplier<T> registerObject(final ResourceLocation objId, final Supplier<T> objSup, Registry<V> targetRegistry) {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus(); // Should not be null at the time this method is called
 
-        ResourceKey<? extends Registry<T>> targetRegistryKey = targetRegistry.key();
+        ResourceKey<? extends Registry<V>> targetRegistryKey = targetRegistry.key();
 
         DeferredRegister<T> existingDefReg = (DeferredRegister<T>) CACHED_REGISTRIES.computeIfAbsent(targetRegistryKey, defReg -> {
-            DeferredRegister<T> cachedDefReg = DeferredRegister.create(targetRegistryKey, MOD_ID);
+            DeferredRegister<V> cachedDefReg = DeferredRegister.create(targetRegistryKey, MOD_ID);
             cachedDefReg.register(modBus);
             return cachedDefReg;
         });

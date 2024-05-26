@@ -1,0 +1,26 @@
+{
+  "entity_type": "enchantwithmob:enchanter",
+  "weight": 40,
+  "strength": 8,
+  "ranks": [
+    "soldier",
+    "captain",
+    "general",
+    "leader"
+  ],
+  "boosts": {
+    "rarity_overrides": [
+      {
+        "boost": "faction_craft:mount/faction_ravager",
+        "rarity": "rare"
+      }
+    ]
+  },
+  "wave_range": {
+    "min": 3
+  },
+  "spawned_range": {
+    "max": 1
+  },
+  "max_spawned_per_x": 5
+}
