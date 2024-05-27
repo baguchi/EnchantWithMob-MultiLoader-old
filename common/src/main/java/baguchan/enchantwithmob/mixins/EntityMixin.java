@@ -2,8 +2,10 @@ package baguchan.enchantwithmob.mixins;
 
 import baguchan.enchantwithmob.api.IEnchantCap;
 import baguchan.enchantwithmob.api.IEnchantedTime;
-import baguchan.enchantwithmob.network.packet.MobEnchantedMessage;
 import baguchan.enchantwithmob.platform.Services;
+import baguchan.enchantwithmob.registry.EWMobEnchants;
+import baguchan.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.level.Level;
@@ -41,6 +43,24 @@ public abstract class EntityMixin implements IEnchantedTime {
     public void refreshDimensions(CallbackInfo callbackInfo) {
         if (this instanceof IEnchantCap cap) {
             if (cap.getEnchantCap().hasEnchant()) {
+                int small = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.SMALL);
+                int big = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.HUGE);
+                if (small > 0) {
+                    int level = small;
+                    float cappedScale = Mth.clamp(0.15F * level, 0.0F, 0.9F);
+                    float totalWidth = this.dimensions.width * (1.0F - cappedScale);
+                    float totalHeight = this.dimensions.height * (1.0F - cappedScale);
+                    eyeHeight = eyeHeight * (1.0F - cappedScale);
+
+                    dimensions = EntityDimensions.fixed(totalWidth, totalHeight);
+                } else if (big > 0) {
+                    int level = big;
+
+                    float totalWidth = this.dimensions.width * (1.0F + level * 0.15F);
+                    float totalHeight = this.dimensions.height * (1.0F + level * 0.15F);
+                    eyeHeight = eyeHeight * (1.0F + level * 0.15F);
+                    dimensions = EntityDimensions.fixed(totalWidth, totalHeight);
+                }
                 if (Services.CONFIG_HANDLER.getChangeSizeWhenEnchant()) {
                     float totalWidth = this.dimensions.width * 1.025F;
                     float totalHeight = this.dimensions.height * 1.025F;
@@ -50,20 +70,6 @@ public abstract class EntityMixin implements IEnchantedTime {
             }
         }
     }
-
-    @Inject(method = "restoreFrom", at = @At("TAIL"))
-    public void restoreFrom(Entity $$0, CallbackInfo ci) {
-        Entity entity = ((Entity) (Object) this);
-        if ($$0 instanceof IEnchantCap enchantCap) {
-            if (!this.level().isClientSide) {
-                for (int i = 0; i < enchantCap.getEnchantCap().getMobEnchants().size(); i++) {
-                    MobEnchantedMessage message = new MobEnchantedMessage(entity, enchantCap.getEnchantCap().getMobEnchants().get(i));
-                    Services.NETWORK_HANDLER.sendToEntity(entity, message);
-                }
-            }
-        }
-    }
-
 
 
     public final float getEyeHeight() {

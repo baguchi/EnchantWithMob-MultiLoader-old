@@ -3,7 +3,6 @@ package baguchan.enchantwithmob.registry;
 import baguchan.enchantwithmob.entity.Enchanter;
 import baguchan.enchantwithmob.platform.Services;
 import baguchan.enchantwithmob.utils.ResourceLocationHelper;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +24,6 @@ public class EWEntityTypes {
     }
 
    private static <T extends Entity, E extends EntityType<? extends T>> Supplier<E> create(String key, Supplier<E> builder) {
-       return Services.REGISTRAR.registerObject(modLoc(key), builder, (Registry<E>) BuiltInRegistries.ENTITY_TYPE);
+       return Services.REGISTRAR.registerObject(modLoc(key), builder, BuiltInRegistries.ENTITY_TYPE);
     }
 }

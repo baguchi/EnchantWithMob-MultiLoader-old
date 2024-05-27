@@ -9,6 +9,7 @@ import baguchan.enchantwithmob.registry.EWItems;
 import baguchan.enchantwithmob.registry.EWMobEnchants;
 import baguchan.enchantwithmob.utils.MobEnchantCombatRules;
 import baguchan.enchantwithmob.utils.MobEnchantUtils;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -18,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
@@ -32,6 +34,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -68,6 +71,35 @@ public class CommonEventHandler {
                 }
             });
         }
+        if (event.getRayTraceResult() instanceof BlockHitResult || event.getRayTraceResult() instanceof EntityHitResult) {
+            if (!shooterIsLiving(projectile) || !EnchantConfig.COMMON.allowPoisonCloudProjectile.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(projectile.getType()).toString()))
+                return;
+            LivingEntity owner = (LivingEntity) projectile.getOwner();
+            if (owner instanceof IEnchantCap cap) {
+                int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON_CLOUD);
+
+                if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON_CLOUD)) {
+                    //arrow is different
+                    if (!(projectile instanceof AbstractArrow) || !projectile.onGround()) {
+                        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(owner.level(), event.getRayTraceResult().getLocation().x, event.getRayTraceResult().getLocation().y, event.getRayTraceResult().getLocation().z);
+                        areaeffectcloud.setRadius(0.6F);
+                        areaeffectcloud.setRadiusOnUse(-0.01F);
+                        areaeffectcloud.setWaitTime(10);
+                        areaeffectcloud.setDuration(40);
+                        areaeffectcloud.setOwner(owner);
+                        areaeffectcloud.setRadiusPerTick(-0.001F);
+
+                        areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.POISON, 80, i - 1));
+                        owner.level().addFreshEntity(areaeffectcloud);
+                    }
+                }
+            }
+            ;
+        }
+    }
+
+    public static boolean shooterIsLiving(Projectile projectile) {
+        return projectile.getOwner() != null && projectile.getOwner() instanceof LivingEntity;
     }
     /*
      * this event handle the Ender dragon mob enchant

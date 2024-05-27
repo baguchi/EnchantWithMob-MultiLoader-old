@@ -23,6 +23,7 @@ import io.github.fabricators_of_create.porting_lib.entity.events.PlayerEvents;
 import io.github.fabricators_of_create.porting_lib.entity.events.ProjectileImpactEvent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
@@ -47,6 +48,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -183,25 +185,27 @@ public class EnchantWithMobFabric implements ModInitializer {
                 });
             }
 
-            if (!shooterIsLiving(projectile) || !EnchantConfig.COMMON.allowPoisonCloudProjectile.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(projectile.getType()).toString()))
-                return;
-            LivingEntity owner = (LivingEntity) projectile.getOwner();
-            if (owner instanceof IEnchantCap cap) {
-                int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON_CLOUD);
+            if (event.getRayTraceResult() instanceof BlockHitResult) {
+                if (!shooterIsLiving(projectile) || !EnchantConfig.COMMON.allowPoisonCloudProjectile.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(projectile.getType()).toString()))
+                    return;
+                LivingEntity owner = (LivingEntity) projectile.getOwner();
+                if (owner instanceof IEnchantCap cap) {
+                    int i = MobEnchantUtils.getMobEnchantLevelFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON_CLOUD);
 
-                if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON_CLOUD)) {
-                    //arrow is different
-                    if (!(projectile instanceof AbstractArrow) || !projectile.onGround()) {
-                        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(owner.level(), event.getRayTraceResult().getLocation().x, event.getRayTraceResult().getLocation().y, event.getRayTraceResult().getLocation().z);
-                        areaeffectcloud.setRadius(0.6F);
-                        areaeffectcloud.setRadiusOnUse(-0.01F);
-                        areaeffectcloud.setWaitTime(10);
-                        areaeffectcloud.setDuration(80);
-                        areaeffectcloud.setOwner(owner);
-                        areaeffectcloud.setRadiusPerTick(-0.001F);
+                    if (cap.getEnchantCap().hasEnchant() && MobEnchantUtils.findMobEnchantFromHandler(cap.getEnchantCap().getMobEnchants(), EWMobEnchants.POISON_CLOUD)) {
+                        //arrow is different
+                        if (!(projectile instanceof AbstractArrow) || !projectile.onGround()) {
+                            AreaEffectCloud areaeffectcloud = new AreaEffectCloud(owner.level(), event.getRayTraceResult().getLocation().x, event.getRayTraceResult().getLocation().y, event.getRayTraceResult().getLocation().z);
+                            areaeffectcloud.setRadius(0.6F);
+                            areaeffectcloud.setRadiusOnUse(-0.01F);
+                            areaeffectcloud.setWaitTime(10);
+                            areaeffectcloud.setDuration(40);
+                            areaeffectcloud.setOwner(owner);
+                            areaeffectcloud.setRadiusPerTick(-0.001F);
 
-                        areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.POISON, 80, i - 1));
-                        owner.level().addFreshEntity(areaeffectcloud);
+                            areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.POISON, 80, i - 1));
+                            owner.level().addFreshEntity(areaeffectcloud);
+                        }
                     }
                 }
             }
@@ -260,6 +264,16 @@ public class EnchantWithMobFabric implements ModInitializer {
                 }
                 if (id.toString().equals("minecraft:chests/stronghold_library")) {
                     tableBuilder = FabricLootTableBuilder.copyOf(tableBuilder.build()).pool(LootPool.lootPool().add(LootItem.lootTableItem(EWItems.MOB_ENCHANT_BOOK.get()).apply(MobEnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(20, 30)))).build());
+                }
+            }
+        });
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, serverLevel) -> {
+            if (player instanceof IEnchantCap enchantCap) {
+                if (!serverLevel.isClientSide) {
+                    for (int i = 0; i < enchantCap.getEnchantCap().getMobEnchants().size(); i++) {
+                        MobEnchantedMessage message = new MobEnchantedMessage(player, enchantCap.getEnchantCap().getMobEnchants().get(i));
+                        Services.NETWORK_HANDLER.sendToEntity(player, message);
+                    }
                 }
             }
         });
